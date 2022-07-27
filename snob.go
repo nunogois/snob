@@ -16,8 +16,9 @@ func main() {
 	var jsonPrint bool
 
 	app := &cli.App{
-		Name:  "snob",
-		Usage: "Simple fetcher for movies and TV shows info",
+		Name:    "snob",
+		Version: "v0.0.4",
+		Usage:   "Simple fetcher for movies and TV shows info",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "key",
