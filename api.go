@@ -37,6 +37,8 @@ type Result struct {
 	BoxOffice  string   `json:"BoxOffice"`
 	Production string   `json:"Production"`
 	Website    string   `json:"Website"`
+	Response   string   `json:"Response"`
+	Error      string   `json:"Error"`
 }
 
 var req = &http.Client{Timeout: 10 * time.Second}
@@ -46,7 +48,7 @@ func search(query string, result *Result, key string) error {
 		key = getKey()
 	}
 	if key == "" {
-		return errors.New("No API key set. Request one at https://www.omdbapi.com/apikey.aspx and then set it with `snob -k YOUR_KEY`.")
+		return errors.New("No API key set - Request one at https://www.omdbapi.com/apikey.aspx and then set it with: snob -k YOUR_KEY")
 	}
 
 	res, err := req.Get("https://www.omdbapi.com/?apikey=" + key + "&t=" + query)
@@ -55,5 +57,14 @@ func search(query string, result *Result, key string) error {
 	}
 	defer res.Body.Close()
 
-	return json.NewDecoder(res.Body).Decode(&result)
+	decodeErr := json.NewDecoder(res.Body).Decode(&result)
+	if decodeErr != nil {
+		return decodeErr
+	}
+
+	if result.Response == "False" {
+		return errors.New("API Error: " + result.Error)
+	}
+
+	return nil
 }

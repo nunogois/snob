@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -17,7 +16,7 @@ func main() {
 
 	app := &cli.App{
 		Name:    "snob",
-		Version: "v0.0.4",
+		Version: "v0.0.5",
 		Usage:   "Simple fetcher for movies and TV shows info",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -39,10 +38,10 @@ func main() {
 			if query == "" {
 				if key != "" {
 					setKey(key)
-					fmt.Println("Key set successfully.")
+					fmt.Println("Key set successfully")
 					return nil
 				} else {
-					return errors.New("No query provided.")
+					cli.ShowAppHelpAndExit(ctx, 0)
 				}
 			}
 

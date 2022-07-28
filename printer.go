@@ -8,8 +8,21 @@ import (
 )
 
 func printJSON(result *Result) {
-	j, _ := json.MarshalIndent(result, "", "  ")
+	cleanResult := ignoreFields(result, "Result", "Error")
+	j, _ := json.MarshalIndent(cleanResult, "", "  ")
 	fmt.Println(string(j))
+}
+
+func ignoreFields(result interface{}, fields ...string) map[string]interface{} {
+	jsonResult, _ := json.Marshal(result)
+	mapResult := map[string]interface{}{}
+	json.Unmarshal([]byte(string(jsonResult)), &mapResult)
+
+	for _, field := range fields {
+		delete(mapResult, field)
+	}
+
+	return mapResult
 }
 
 func printRatings(result *Result) {
