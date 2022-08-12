@@ -13,15 +13,16 @@ func main() {
 	loadConfig()
 	var key string
 	var jsonPrint bool
+	var avoidSpoilers bool
 
 	app := &cli.App{
 		Name:    "snob",
-		Version: "v0.0.5",
+		Version: "v0.0.6",
 		Usage:   "Simple fetcher for movies and TV shows info",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "key",
-				Aliases:     []string{"k", "s"},
+				Aliases:     []string{"k"},
 				Usage:       "OMDb API key to use",
 				Destination: &key,
 			},
@@ -30,6 +31,12 @@ func main() {
 				Aliases:     []string{"j"},
 				Usage:       "Get result as JSON",
 				Destination: &jsonPrint,
+			},
+			&cli.BoolFlag{
+				Name:        "spoilers",
+				Aliases:     []string{"s"},
+				Usage:       "Get result without spoiler-sensitive information",
+				Destination: &avoidSpoilers,
 			},
 		},
 		Action: func(ctx *cli.Context) error {
@@ -51,9 +58,9 @@ func main() {
 			}
 
 			if jsonPrint {
-				printJSON(result)
+				printJSON(result, avoidSpoilers)
 			} else {
-				printPretty(result)
+				printPretty(result, avoidSpoilers)
 			}
 
 			return nil
